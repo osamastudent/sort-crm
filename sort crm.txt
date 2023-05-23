@@ -1,0 +1,51 @@
+<div class="form-group" :class="[errors.has('sort_order') ? 'has-error' : '']">
+                                <label for="sort_order" class="required">{{ __('admin::app.settings.attributes.sort_order') }}</label>
+
+                                <input type="text" name="sort_order" class="control" id="sort_order" value="{{ old('sort_order') ?: $attribute->sort_order }}" v-validate="'required'" data-vv-as="&quot;{{ __('admin::app.settings.attributes.sort_order') }}&quot;" />
+
+                                <span class="control-error" v-if="errors.has('sort_order')">
+                                    @{{ errors.first('sort_order') }}
+                                </span>
+                            </div>
+
+
+
+
+
+
+
+
+
+
+ <tab name="{{ __('admin::app.leads.details') }}" :selected="true">
+                            @include('admin::leads.common.contact')
+
+                             <contact-component :data='@json(old('person'))'></contact-component> 
+
+                             
+{{--  @include('admin::leads.common.products')
+                                <product-list :data='@json(old('products'))'></product-list> --}}
+
+                                @include('admin::common.custom-attributes.edit', [
+                                    'customAttributes'  => app('Webkul\Attribute\Repositories\AttributeRepository')
+                                    {{-- ->findWhere([
+                                        'entity_type' => 'leads',
+                                        'quick_add'   => 1
+                                    ]), --}}
+                                    ->scopeQuery(function($query) {
+                                            return $query
+                                                ->where('entity_type', 'leads')
+                                                ->where('quick_add', 1)
+                                                ->orderByRaw('ISNULL(sort_order), sort_order');
+                                        })->get(),
+
+                                    'customValidations' => [
+                                        'expected_close_date' => [
+                                            'date_format:yyyy-MM-dd',
+                                            'after:' .  \Carbon\Carbon::yesterday()->format('Y-m-d')
+                                        ],
+                                    ],
+                                ])
+
+                                
+                            </tab>
